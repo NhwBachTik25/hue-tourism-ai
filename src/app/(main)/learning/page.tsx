@@ -5,10 +5,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Brain, Zap, Target, MapPin, RefreshCw, BookOpen } from 'lucide-react';
+import { ArrowRight, Brain, Zap, Target, MapPin, RefreshCw, BookOpen, Star } from 'lucide-react';
 import { useLanguage } from '@/components/providers/language-provider';
 import InteractiveNotebook from '@/components/learning/InteractiveNotebook';
-import { QUIZ_BANK } from '@/data/quiz-bank';
+import { hoaRound1Pairs, hoaRound2Data, hoaRound3Data, ameQuizData, type Round1Pair, type Round2TF, type Round3MCQ, type AmeRoundQuestion } from '@/data/fixed-games';
 
 // Utils
 function shuffle<T>(arr: T[]): T[] {
@@ -18,16 +18,6 @@ function shuffle<T>(arr: T[]): T[] {
         [a[i], a[j]] = [a[j], a[i]];
     }
     return a;
-}
-
-// Interfaces
-interface Round1Pair { left: string; right: string; }
-interface Round2TF { q: string; ans: boolean; }
-interface Round3MCQ { q: string; opts: string[]; ans: number; exp: string; }
-interface QuizData {
-    round1: Round1Pair[];
-    round2: Round2TF[];
-    round3: Round3MCQ[];
 }
 
 // -----------------------------------------------------
@@ -96,7 +86,7 @@ function Round1Matching({ data, onComplete }: { data: Round1Pair[], onComplete: 
             <div className="relative z-10">
                 <div className="text-center mb-4">
                     <Badge className="bg-teal-600/80 text-white hover:bg-teal-700 border-teal-500 text-sm px-4 py-1">
-                        {lang === 'vi' ? 'VÒNG 1: GHÉP CẶP DI SẢN' : 'ROUND 1: HERITAGE MATCHING'}
+                        {lang === 'vi' ? 'VÒNG 1: GIẢI MÃ NGÔI ĐÌNH CỔ' : 'ROUND 1: ANCIENT TEMPLE DECODING'}
                     </Badge>
                 </div>
                 {!complete ? (
@@ -213,7 +203,7 @@ function Round2TF({ data, onComplete }: { data: Round2TF[], onComplete: (score: 
             <div className="relative z-10">
                 <div className="text-center mb-4">
                     <Badge className="bg-amber-600/80 text-white hover:bg-amber-700 border-amber-500 text-sm px-4 py-1">
-                        {lang === 'vi' ? 'VÒNG 2: NHÀ KHẢO CỔ (ĐÚNG/SAI)' : 'ROUND 2: ARCHAEOLOGIST (T/F)'}
+                        {lang === 'vi' ? 'VÒNG 2: NHÀ KHẢO CỔ TÀI BA' : 'ROUND 2: MASTER ARCHAEOLOGIST'}
                     </Badge>
                 </div>
                 
@@ -272,7 +262,7 @@ function Round2TF({ data, onComplete }: { data: Round2TF[], onComplete: (score: 
 }
 
 // -----------------------------------------------------
-// ROUND 3: MULTIPLE CHOICE (Trắc nghiệm)
+// ROUND 3: MULTIPLE CHOICE (Trắc nghiệm Game 1)
 // -----------------------------------------------------
 function Round3MCQ({ data, onComplete }: { data: Round3MCQ[], onComplete: (score: number) => void }) {
     const { language } = useLanguage();
@@ -303,7 +293,7 @@ function Round3MCQ({ data, onComplete }: { data: Round3MCQ[], onComplete: (score
         if (answered) return;
         setSelectedOpt(idx);
         setAnswered(true);
-        if (idx === data[currentQ].ans) setScore(s => s + 10);
+        if (idx === data[currentQ].answer) setScore(s => s + 10);
     };
 
     const nextQuestion = () => {
@@ -321,7 +311,7 @@ function Round3MCQ({ data, onComplete }: { data: Round3MCQ[], onComplete: (score
             <div className="relative z-10">
                 <div className="text-center mb-4">
                     <Badge variant="outline" className="bg-zinc-900 border-zinc-700 text-zinc-300 px-4 py-1">
-                        {lang === 'vi' ? 'VÒNG 3: TRUY CẤU TẬN CÙNG (TRẮC NGHIỆM)' : 'ROUND 3: DEEP DIVE (MCQ)'}
+                        {lang === 'vi' ? 'VÒNG 3: KHÁM PHÁ BIỂN PHÚ DIÊN' : 'ROUND 3: PHU DIEN BEACH DISCOVERY'}
                     </Badge>
                 </div>
                 
@@ -340,9 +330,8 @@ function Round3MCQ({ data, onComplete }: { data: Round3MCQ[], onComplete: (score
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
-                    {q.opts.map((opt, idx) => {
-                        const letter = String.fromCharCode(65 + idx);
-                        const isCorrect = idx === q.ans;
+                    {q.options.map((opt, idx) => {
+                        const isCorrect = idx === q.answer;
                         const isSelected = selectedOpt === idx;
                         return (
                             <button key={idx} disabled={answered} onClick={() => handleAnswer(idx)}
@@ -355,22 +344,11 @@ function Round3MCQ({ data, onComplete }: { data: Round3MCQ[], onComplete: (score
                                                 ? 'bg-rose-950/80 border-rose-500/50 text-rose-300 animate-shake'
                                                 : 'bg-zinc-900/30 border-zinc-800/50 text-zinc-600 opacity-50'}
                                 `}>
-                                <span className="mr-3 font-bold opacity-70">{letter}.</span> {opt}
+                                {opt}
                             </button>
                         )
                     })}
                 </div>
-
-                <AnimatePresence>
-                    {answered && (
-                        <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="overflow-hidden">
-                            <div className="bg-cyan-950/30 p-4 rounded-xl mb-6 text-sm border border-cyan-900/50 text-cyan-200/80 leading-relaxed">
-                                <span className="text-cyan-400 font-semibold mr-2">{lang === 'vi' ? 'Giải thích:' : 'Explanation:'}</span>
-                                {q.exp}
-                            </div>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
 
                 {answered && (
                     <div className="text-center mt-2">
@@ -390,44 +368,162 @@ function Round3MCQ({ data, onComplete }: { data: Round3MCQ[], onComplete: (score
 }
 
 // -----------------------------------------------------
+// FULL MCQ GAME (Game 2 - Ame)
+// -----------------------------------------------------
+function FullMCQGame({ data, onComplete }: { data: AmeRoundQuestion[], onComplete: (score: number) => void }) {
+    const { language } = useLanguage();
+    const lang = language as 'vi' | 'en';
+    const [currentQ, setCurrentQ] = useState(0);
+    const [score, setScore] = useState(0);
+    const [timeLeft, setTimeLeft] = useState(10);
+    const [answered, setAnswered] = useState(false);
+    const [selectedOpt, setSelectedOpt] = useState<number | null>(null);
+
+    useEffect(() => {
+        setTimeLeft(10);
+        setAnswered(false);
+        setSelectedOpt(null);
+    }, [currentQ]);
+
+    useEffect(() => {
+        if (answered || currentQ >= data.length) return;
+        if (timeLeft <= 0) {
+            setAnswered(true);
+            return;
+        }
+        const t = setTimeout(() => setTimeLeft(prev => prev - 1), 1000);
+        return () => clearTimeout(t);
+    }, [timeLeft, answered, currentQ, data.length]);
+
+    const handleAnswer = (idx: number) => {
+        if (answered) return;
+        setSelectedOpt(idx);
+        setAnswered(true);
+        if (idx === data[currentQ].answer) setScore(s => s + 10);
+    };
+
+    const nextQuestion = () => {
+        if (currentQ < data.length - 1) setCurrentQ(c => c + 1);
+        else onComplete(score);
+    };
+
+    if (currentQ >= data.length) return null;
+    const q = data[currentQ];
+
+    // Dynamic Theme based on question index (1-8: Cổ điển, 9-16: Khảo cổ, 17-24: Biển xanh)
+    let themeClass = "bg-gradient-to-br from-[#0a1a1a] to-[#0d2525] border-teal-700/50 shadow-2xl";
+    let badgeClass = "bg-teal-900 border-teal-700 text-teal-300";
+    let timerBgClass = timeLeft > 5 ? 'bg-teal-500' : timeLeft > 2 ? 'bg-amber-500' : 'bg-red-500';
+    let optMutedClass = "bg-[#1a202c]/60 text-teal-100/80 border-teal-900/50 hover:bg-[#2d3748]/60 hover:border-teal-700/50";
+
+    if (currentQ >= 8 && currentQ < 16) {
+        themeClass = "bg-gradient-to-br from-[#2a1810] to-[#1a1205] border-amber-700/50 shadow-2xl";
+        badgeClass = "bg-amber-900 border-amber-700 text-amber-300";
+        timerBgClass = timeLeft > 5 ? 'bg-amber-500' : timeLeft > 2 ? 'bg-orange-500' : 'bg-red-500';
+        optMutedClass = "bg-[#2a1810]/60 text-amber-100/80 border-amber-900/50 hover:bg-[#3d2417]/60 hover:border-amber-700/50";
+    } else if (currentQ >= 16) {
+        themeClass = "bg-[#09090b] border-zinc-800 shadow-2xl";
+        badgeClass = "bg-zinc-900 border-zinc-700 text-zinc-300";
+        timerBgClass = timeLeft > 5 ? 'bg-cyan-500' : timeLeft > 2 ? 'bg-amber-500' : 'bg-red-500';
+        optMutedClass = "bg-zinc-900/50 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:border-zinc-700 hover:text-white";
+    }
+
+    const timerPercent = (timeLeft / 10) * 100;
+
+    return (
+        <Card className={`p-4 md:p-6 relative overflow-hidden text-foreground transition-all duration-500 ${themeClass}`}>
+            <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:32px_32px]" />
+            <div className="relative z-10">
+                <div className="text-center mb-4">
+                    <Badge variant="outline" className={`px-4 py-1 ${badgeClass}`}>
+                        {q.round}
+                    </Badge>
+                </div>
+                
+                <div className="mb-6 mt-2">
+                    <div className="h-2 bg-black/40 rounded-full overflow-hidden shadow-inner">
+                        <motion.div className={`h-full ${timerBgClass}`}
+                            animate={{ width: `${timerPercent}%` }} transition={{ duration: 0.3 }} />
+                    </div>
+                    <p className="text-center text-sm font-bold mt-1 text-muted-foreground">{timeLeft}s</p>
+                </div>
+
+                <div className="mb-8">
+                    <h3 className="text-lg md:text-xl font-medium text-center text-white leading-relaxed min-h-[60px]">
+                        {q.q}
+                    </h3>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
+                    {q.options.map((opt, idx) => {
+                        const isCorrect = idx === q.answer;
+                        const isSelected = selectedOpt === idx;
+                        return (
+                            <button key={idx} disabled={answered} onClick={() => handleAnswer(idx)}
+                                className={`p-4 rounded-xl font-medium text-left transition-all border
+                                    ${!answered 
+                                        ? `${optMutedClass} cursor-pointer`
+                                        : isCorrect 
+                                            ? 'bg-emerald-950/80 border-emerald-500/50 text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.15)] z-10'
+                                            : isSelected 
+                                                ? 'bg-rose-950/80 border-rose-500/50 text-rose-300 animate-shake'
+                                                : 'bg-black/30 border-transparent text-gray-500 opacity-50'}
+                                `}>
+                                {opt}
+                            </button>
+                        )
+                    })}
+                </div>
+
+                {answered && (
+                    <div className="text-center mt-2">
+                        <Button onClick={nextQuestion} variant="outline" className="px-8 border-zinc-700 hover:bg-zinc-800 hover:text-white transition-all bg-black/20">
+                            {currentQ < data.length - 1 ? (lang === 'vi' ? 'Tiếp Hiện Tại' : 'Next Question') : (lang === 'vi' ? 'Xem Kết Quả Chung Cuộc' : 'View Final Results')} <ArrowRight className="ml-2 w-4 h-4"/>
+                        </Button>
+                    </div>
+                )}
+                
+                <div className="flex justify-between text-muted-foreground font-medium mt-6 border-t border-white/10 pt-4">
+                    <span>{lang === 'vi' ? 'Câu hỏi' : 'Question'}: {currentQ + 1}/{data.length}</span>
+                    <span>{lang === 'vi' ? 'Điểm' : 'Score'}: {score}</span>
+                </div>
+            </div>
+        </Card>
+    );
+}
+
+// -----------------------------------------------------
 // MAIN PAGE
 // -----------------------------------------------------
 function LearningPageContent() {
     const { language } = useLanguage();
     const lang = language as 'vi' | 'en';
     const [mounted, setMounted] = useState(false);
-    const [activeTab, setActiveTab] = useState<'ai' | 'notebook'>('ai');
+    const [activeTab, setActiveTab] = useState<'games' | 'notebook'>('games');
     
     // Status
-    const [status, setStatus] = useState<'menu' | 'loading' | 'round1' | 'round2' | 'round3' | 'end'>('menu');
-    const [quizData, setQuizData] = useState<QuizData | null>(null);
+    const [status, setStatus] = useState<'menu' | 'loading' | 'hoa_r1' | 'hoa_r2' | 'hoa_r3' | 'ame' | 'end'>('menu');
     const [totalScore, setTotalScore] = useState(0);
+    const [maxScore, setMaxScore] = useState(0);
 
     useEffect(() => { setMounted(true); }, []);
 
-    const handleGenerate = async () => {
+    const startGame1 = () => {
         setStatus('loading');
-        
         setTimeout(() => {
-            try {
-                if (!QUIZ_BANK || QUIZ_BANK.length === 0) {
-                    throw new Error('Chưa tạo xong bộ đề, vui lòng thử lại sau giây lát!');
-                }
-                const randomIdx = Math.floor(Math.random() * QUIZ_BANK.length);
-                const d = QUIZ_BANK[randomIdx];
-                setQuizData({
-                    round1: d.round1 || [],
-                    round2: d.round2 || [],
-                    round3: d.round3 || []
-                });
-                setTotalScore(0);
-                setStatus('round1');
-            } catch (e: any) {
-                console.error('Generator error:', e.message);
-                alert(e.message || 'Error details viewable in console.');
-                setStatus('menu');
-            }
-        }, 600); // Short simulated loading time
+            setTotalScore(0);
+            setMaxScore(240); // 8 cặp (80), 8 TF (80), 8 MCQ (80)
+            setStatus('hoa_r1');
+        }, 500);
+    };
+
+    const startGame2 = () => {
+        setStatus('loading');
+        setTimeout(() => {
+            setTotalScore(0);
+            setMaxScore(240); // 24 MCQ (240)
+            setStatus('ame');
+        }, 500);
     };
 
     if (!mounted) {
@@ -445,16 +541,16 @@ function LearningPageContent() {
                         </h1>
                         <h2 className="text-xl md:text-2xl font-medium text-muted-foreground flex items-center justify-center">
                             <MapPin className="w-5 h-5 mr-2 text-amber-500" />
-                            {lang === 'vi' ? 'Di Sản Văn Hóa Việt Nam' : 'Vietnamese Cultural Heritage'}
+                            {lang === 'vi' ? 'Xã Phú Vinh, Thành phố Huế' : 'Phu Vinh Commune, Hue City'}
                         </h2>
                     </motion.div>
                 </div>
                 
                 <div className="flex justify-center mb-6 z-20 relative">
-                    <div className="bg-background/50 backdrop-blur-md p-1.5 rounded-2xl border border-border/50 inline-flex shadow-lg mb-2 flex-wrap justify-center">
+                    <div className="bg-background/50 backdrop-blur-md p-1.5 rounded-2xl border border-border/50 inline-flex shadow-lg mb-2 flex-wrap justify-center gap-2">
                         <button 
-                            onClick={() => setActiveTab('ai')}
-                            className={`flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all ${activeTab === 'ai' ? 'bg-primary text-primary-foreground shadow-md scale-100' : 'text-muted-foreground hover:bg-foreground/5 scale-95'}`}
+                            onClick={() => { setActiveTab('games'); setStatus('menu'); }}
+                            className={`flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all ${activeTab === 'games' ? 'bg-primary text-primary-foreground shadow-md scale-100' : 'text-muted-foreground hover:bg-foreground/5 scale-95'}`}
                         >
                             <Brain className="w-5 h-5" />
                             {lang === 'vi' ? 'Thử Thách Kiến Thức' : 'Knowledge Challenge'}
@@ -471,7 +567,7 @@ function LearningPageContent() {
 
                 <div className="mt-4 relative">
                     <AnimatePresence mode="wait">
-                        {activeTab === 'ai' && status === 'menu' && (
+                        {activeTab === 'games' && status === 'menu' && (
                             <motion.div key="menu" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
                                 <Card className="bg-card/50 backdrop-blur-md border-border/50 shadow-2xl p-6 md:p-10 relative overflow-hidden">
                                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 to-teal-500" />
@@ -479,73 +575,107 @@ function LearningPageContent() {
                                         <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
                                             <Brain className="w-5 h-5 text-primary" />
                                         </div>
-                                        <h3 className="font-bold text-2xl text-foreground">{lang === 'vi' ? 'Thử Thách Kiến Thức' : 'Knowledge Challenge'}</h3>
+                                        <h3 className="font-bold text-2xl text-foreground">{lang === 'vi' ? 'Khám Phá Di Sản Quê Hương' : 'Discover Homeland Heritage'}</h3>
                                     </div>
-                                    <div className="bg-accent/30 p-5 rounded-xml border border-accent mb-8">
-                                        <p className="mb-3 font-medium text-foreground">💡 <strong>Điều lệ 3 Vòng (Sinh ngẫu nhiên):</strong></p>
-                                        <ul className="space-y-2 text-sm text-muted-foreground">
-                                            <li className="flex items-center"><span className="w-2 h-2 rounded-full bg-teal-500 mr-2" /> Vòng 1: Cặp Dữ Kiện Định Mệnh (60s)</li>
-                                            <li className="flex items-center"><span className="w-2 h-2 rounded-full bg-amber-500 mr-2" /> Vòng 2: Phán Đoán Chân Lý Đoản (10s)</li>
-                                            <li className="flex items-center"><span className="w-2 h-2 rounded-full bg-cyan-500 mr-2" /> Vòng 3: Truy Vấn Sâu Về Bản Chất (15s)</li>
-                                        </ul>
+                                    <div className="bg-accent/30 p-5 rounded-xl border border-accent mb-8 leading-relaxed text-muted-foreground">
+                                        <p className="mb-2"><strong>Giới thiệu:</strong> Chào mừng các em học sinh trường THCS An Bằng - Vinh An đến với chuyến phiêu lưu kỳ thú! Cùng khám phá vẻ đẹp lịch sử, văn hóa và thiên nhiên quê hương mình nhé.</p>
+                                        <p>Bạn có thể chọn 1 trong 2 chế độ chơi dưới đây:</p>
                                     </div>
 
-                                    <div className="space-y-5">
-                                        <Button onClick={handleGenerate} className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-6 rounded-xl transition-all shadow-lg hover:shadow-emerald-500/25 text-lg">
-                                            <Zap className="mr-2 w-6 h-6" />
-                                            {lang === 'vi' ? 'Bắt Đầu Thử Thách Khám Phá' : 'Start Discovery Challenge'}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                        <Button onClick={startGame1} className="w-full h-auto flex flex-col items-center justify-center bg-teal-900/40 hover:bg-teal-800/60 border border-teal-700/50 text-teal-50 font-medium py-8 px-4 rounded-2xl transition-all shadow-lg text-center group">
+                                            <Star className="mb-3 w-8 h-8 text-teal-400 group-hover:scale-110 transition-transform" />
+                                            <span className="text-lg font-bold block mb-1">{lang === 'vi' ? 'Chế độ Đa Dạng (Hoa)' : 'Mixed Mode (Hoa)'}</span>
+                                            <span className="text-sm text-teal-300/70 font-normal">3 Vòng: Ghép cặp, Đúng/Sai, Trắc Nghiệm</span>
+                                        </Button>
+
+                                        <Button onClick={startGame2} className="w-full h-auto flex flex-col items-center justify-center bg-amber-900/40 hover:bg-amber-800/60 border border-amber-700/50 text-amber-50 font-medium py-8 px-4 rounded-2xl transition-all shadow-lg text-center group">
+                                            <Zap className="mb-3 w-8 h-8 text-amber-400 group-hover:scale-110 transition-transform" />
+                                            <span className="text-lg font-bold block mb-1">{lang === 'vi' ? 'Chế độ Trắc Nghiệm (Ame)' : 'MCQ Mode (Ame)'}</span>
+                                            <span className="text-sm text-amber-300/70 font-normal">Thử thách 24 câu hỏi liên tục theo chủ đề</span>
                                         </Button>
                                     </div>
                                 </Card>
                             </motion.div>
                         )}
 
-                        {activeTab === 'ai' && status === 'loading' && (
+                        {activeTab === 'games' && status === 'loading' && (
                             <motion.div key="loading" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center bg-card/50 backdrop-blur rounded-[20px] p-12 border border-border/50 shadow-2xl">
                                 <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-6" />
                                 <h3 className="text-xl md:text-2xl font-bold text-foreground mb-2">
-                                    {lang === 'vi' ? 'Đang trích xuất Bộ Câu Hỏi Ngẫu Nhiên...' : 'Extracting Random Question Set...'}
+                                    {lang === 'vi' ? 'Đang chuẩn bị chặng đường...' : 'Preparing journey...'}
                                 </h3>
-                                <p className="text-muted-foreground text-sm">{lang === 'vi' ? 'Rất nhanh thôi...' : 'Almost ready...'}</p>
                             </motion.div>
                         )}
 
-                        {activeTab === 'ai' && status === 'round1' && quizData?.round1 && (
-                            <motion.div key="r1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
-                                <Round1Matching data={quizData.round1} onComplete={s => { setTotalScore(curr => curr + s); setStatus('round2'); }} />
+                        {/* GAME 1 FLOW */}
+                        {activeTab === 'games' && status === 'hoa_r1' && (
+                            <motion.div key="hoa_r1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
+                                <Round1Matching data={hoaRound1Pairs} onComplete={s => { setTotalScore(curr => curr + s); setStatus('hoa_r2'); }} />
                             </motion.div>
                         )}
 
-                        {activeTab === 'ai' && status === 'round2' && quizData?.round2 && (
-                            <motion.div key="r2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
-                                <Round2TF data={quizData.round2} onComplete={s => { setTotalScore(curr => curr + s); setStatus('round3'); }} />
+                        {activeTab === 'games' && status === 'hoa_r2' && (
+                            <motion.div key="hoa_r2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
+                                <Round2TF data={hoaRound2Data} onComplete={s => { setTotalScore(curr => curr + s); setStatus('hoa_r3'); }} />
                             </motion.div>
                         )}
 
-                        {activeTab === 'ai' && status === 'round3' && quizData?.round3 && (
-                            <motion.div key="r3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
-                                <Round3MCQ data={quizData.round3} onComplete={s => { setTotalScore(curr => curr + s); setStatus('end'); }} />
+                        {activeTab === 'games' && status === 'hoa_r3' && (
+                            <motion.div key="hoa_r3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
+                                <Round3MCQ data={hoaRound3Data} onComplete={s => { setTotalScore(curr => curr + s); setStatus('end'); }} />
                             </motion.div>
                         )}
 
-                        {activeTab === 'ai' && status === 'end' && (
+                        {/* GAME 2 FLOW */}
+                        {activeTab === 'games' && status === 'ame' && (
+                            <motion.div key="ame" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
+                                <FullMCQGame data={ameQuizData} onComplete={s => { setTotalScore(curr => curr + s); setStatus('end'); }} />
+                            </motion.div>
+                        )}
+
+                        {/* END SCREEN */}
+                        {activeTab === 'games' && status === 'end' && (
                             <motion.div key="end" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-card/50 backdrop-blur rounded-3xl p-8 md:p-12 shadow-2xl border border-border/50 text-center relative overflow-hidden">
                                 <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-emerald-500 via-amber-500 to-teal-500" />
                                 <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6 mt-4">
                                     <Target className="w-10 h-10 text-primary" />
                                 </div>
                                 <h1 className="text-3xl font-bold mb-3 text-foreground tracking-tight">
-                                    {lang === 'vi' ? 'CHỨNG NHẬN KHÁM PHÁ!' : 'CERTIFICATE OF DISCOVERY!'}
+                                    {lang === 'vi' ? '🎉 CHÚC MỪNG CÁC NHÀ THÁM HIỂM! 🎉' : '🎉 CONGRATULATIONS EXPLORERS! 🎉'}
                                 </h1>
-                                <p className="text-muted-foreground mb-6 text-sm">{lang === 'vi' ? 'Bạn đã xuất sắc vượt qua cả 3 bài thử thách.' : 'You successfully completed all 3 trials.'}</p>
+                                <p className="text-muted-foreground mb-6 max-w-2xl mx-auto leading-relaxed">
+                                    {lang === 'vi' 
+                                        ? 'Các em thân mến, qua 3 vòng chơi vừa rồi, chúng ta đã cùng nhau du hành qua những dấu ấn thời gian của quê hương xã Phú Vinh: từ vẻ đẹp tâm linh của đình làng Hà Thanh, nét bí ẩn của Tháp Chăm Phú Diên cho đến bức tranh thiên nhiên hiền hòa của biển. Mong rằng các em sẽ luôn bảo vệ và tự hào về di sản quê hương!' 
+                                        : 'Through these rounds, we have traveled through time exploring Phu Vinh commune: from the spiritual beauty of Ha Thanh temple, the mystery of Phu Dien Cham Tower to the peaceful nature of the sea. Always protect and be proud of your homeland!'}
+                                </p>
                                 
-                                <div className="inline-block bg-accent/30 border border-accent px-8 py-5 rounded-2xl mb-10 text-center">
-                                    <span className="block text-sm text-muted-foreground uppercase tracking-widest mb-1">{lang === 'vi' ? 'Tổng Điểm Tích Lũy' : 'Total Accumulated Score'}</span>
+                                <div className="inline-block bg-accent/30 border border-accent px-10 py-6 rounded-2xl mb-8 text-center">
+                                    <span className="block text-sm text-muted-foreground uppercase tracking-widest mb-1">{lang === 'vi' ? 'Điểm Số Chung Cuộc' : 'Final Score'}</span>
                                     <span className="text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-amber-400 to-teal-400">{totalScore}</span>
+                                    <span className="text-xl font-bold text-muted-foreground">/{maxScore}</span>
+                                </div>
+
+                                {/* Giao lưu cuối giờ */}
+                                <div className="text-left bg-black/20 border border-border/50 rounded-xl p-6 mb-8">
+                                    <h3 className="font-bold text-lg mb-3 text-amber-400 flex items-center gap-2">
+                                        <Star className="w-5 h-5" /> 
+                                        {lang === 'vi' ? 'Giao lưu cuối giờ & Viết vào sổ tay:' : 'Final Reflection & Write in Notebook:'}
+                                    </h3>
+                                    <ol className="list-decimal pl-5 space-y-2 text-foreground/90 font-medium">
+                                        <li className="text-rose-400">{lang === 'vi' ? 'Trong suốt chuyến hành trình vừa qua, em ấn tượng nhất với địa danh nào tại xã Phú Vinh? Vì sao?' : 'Which location impressed you the most? Why?'}</li>
+                                        <li className="text-teal-400">{lang === 'vi' ? 'Em học được điều gì mới mẻ về lịch sử và cảnh đẹp quê hương mình sau trò chơi?' : 'What new things did you learn about your homeland?'}</li>
+                                        <li className="text-blue-400">{lang === 'vi' ? 'Em dự định sẽ làm những việc gì cụ thể để góp phần giữ gìn di sản và cảnh quan quê hương luôn sạch đẹp?' : 'What actions will you take to protect the environment?'}</li>
+                                    </ol>
+                                    <div className="mt-4 pt-4 border-t border-white/10 text-center">
+                                        <Button onClick={() => { setStatus('menu'); setActiveTab('notebook'); }} variant="secondary" className="bg-amber-600/20 hover:bg-amber-600/40 text-amber-100 border-amber-500/30">
+                                            <BookOpen className="mr-2 w-4 h-4" /> {lang === 'vi' ? 'Ghi lại vào Sổ Tay' : 'Write in Notebook'}
+                                        </Button>
+                                    </div>
                                 </div>
                                 
                                 <Button onClick={() => setStatus('menu')} variant="outline" className="w-full md:w-auto px-10 py-6 text-base font-medium transition-all hover:bg-accent hover:text-accent-foreground border-border text-foreground rounded-xl">
-                                    <RefreshCw className="mr-2 w-4 h-4" /> {lang === 'vi' ? 'Chinh Phục Thử Thách Lần Nữa' : 'Start New Challenge'}
+                                    <RefreshCw className="mr-2 w-4 h-4" /> {lang === 'vi' ? 'Chơi Lại Từ Đầu' : 'Play Again'}
                                 </Button>
                             </motion.div>
                         )}

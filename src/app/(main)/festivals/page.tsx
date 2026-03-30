@@ -129,11 +129,10 @@ export default function FestivalsPage() {
             {/* Video Section */}
             <div className="max-w-6xl mx-auto px-4 -mt-20 relative z-20 mb-16">
                  <div className="rounded-2xl overflow-hidden shadow-2xl border border-border/50 bg-black aspect-video relative group">
-                    <video 
-                        src="/video/LeCauNgu.mp4" 
-                        controls 
+                    <iframe 
+                        src="https://drive.google.com/file/d/15zNLb34ykxZbOqktx8f1fo5ciI0lv1CG/preview" 
+                        allowFullScreen 
                         className="w-full h-full object-cover rounded-2xl"
-                        poster="/images/destinations/le-hoi-cau-ngu-1.jpg"
                     />
                  </div>
             </div>

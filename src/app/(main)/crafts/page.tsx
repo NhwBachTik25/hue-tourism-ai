@@ -332,11 +332,19 @@ export default function CraftsPage() {
                                                     {language === 'vi' ? 'Video' : 'Video'}
                                                 </h3>
                                                 <div className="rounded-xl overflow-hidden border border-border/50 bg-black aspect-video">
-                                                    <video 
-                                                        src={selectedCraft.video} 
-                                                        controls 
-                                                        className="w-full h-full"
-                                                    />
+                                                    {selectedCraft.video.includes('drive.google.com') ? (
+                                                        <iframe
+                                                            src={selectedCraft.video}
+                                                            allowFullScreen
+                                                            className="w-full h-full"
+                                                        />
+                                                    ) : (
+                                                        <video 
+                                                            src={selectedCraft.video} 
+                                                            controls 
+                                                            className="w-full h-full"
+                                                        />
+                                                    )}
                                                 </div>
                                             </div>
                                         )}

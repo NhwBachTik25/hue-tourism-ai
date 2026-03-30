@@ -18,7 +18,7 @@ const navItems = [
     { href: '/destinations', labelVi: 'Điểm đến', labelEn: 'Destinations' },
     { href: '/learning', labelVi: 'Học tập', labelEn: 'Learning' },
     { href: '/stories', labelVi: 'AI Lộ trình', labelEn: 'AI Itinerary' },
-
+];
 export function Navbar() {
     const [mounted, setMounted] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);

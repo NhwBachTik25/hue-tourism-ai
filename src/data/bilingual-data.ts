@@ -442,7 +442,7 @@ export const crafts: CraftData[] = [
             '/images/crafts/mam-phu-dien-4.jpg',
             '/images/crafts/mam-phu-dien-5.jpg',
         ],
-        video: '/video/5_ngelammam.mp4',
+        video: 'https://drive.google.com/file/d/1DvS5Qq3smtOA6Eb11XCo-QXP80rkdc9k/preview',
         location: {
             vi: 'Làng Phú Diên, Xã Phú Vinh',
             en: 'Phu Dien Village, Phu Vinh Commune'

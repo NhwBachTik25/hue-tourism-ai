@@ -128,7 +128,7 @@ export default function HomePage() {
       desc: { vi: 'Ngôi đình cổ kính tọa lạc tại xã Vinh Thanh, huyện Phú Vang. Đây là nơi lưu giữ những giá trị kiến trúc nghệ thuật đặc sắc và là trung tâm sinh hoạt tín ngưỡng, văn hóa truyền thống của cộng đồng dân cư địa phương.', en: 'An ancient communal house located in Vinh Thanh commune. It preserves remarkable architectural art values and serves as the center of religious and traditional cultural activities of the local community.' },
       tags: { vi: ['Kiến trúc cổ', 'Tín ngưỡng làng xã', 'Khám phá thực địa'], en: ['Ancient architecture', 'Village beliefs', 'Field exploration'] },
       href: '/heritage',
-      video: '/video/DinhLangHaThanh.mp4',
+      video: 'https://drive.google.com/file/d/1UjqMzbM_g3wGlptzIS_xfyM7XZBMYoCq/preview',
     },
     {
       img: '/images/heritage/thap-cham-phu-dien.jpg',
@@ -138,7 +138,7 @@ export default function HomePage() {
       desc: { vi: 'Ngôi tháp Chăm độc đáo từng bị vùi sâu dưới cồn cát tại xã Phú Diên. Công trình này là minh chứng sống động cho sự giao thoa văn hóa lịch sử, cũng như nghệ thuật xây dựng bằng gạch nung tài tình của người Chăm xưa trên vùng đất Phú Vang.', en: 'A unique Cham tower once buried deep under sand dunes in Phu Dien commune. This structure is a vivid testament to cultural-historical interaction and the skillful brick construction art of ancient Cham people.' },
       tags: { vi: ['Di tích Champa', 'Khảo cổ học', 'Lịch sử địa phương'], en: ['Champa monument', 'Archaeology', 'Local history'] },
       href: '/heritage',
-      video: '/video/2_thapcham_phudien.mp4',
+      video: 'https://drive.google.com/file/d/10ND6A1rlfpaPCORyCr_txFeZcbvpApLa/preview',
     },
     {
       img: '/images/destinations/le-hoi-cau-ngu-1.jpg',
@@ -148,7 +148,7 @@ export default function HomePage() {
       desc: { vi: 'Nét đẹp văn hóa đặc trưng của cư dân vùng biển, thể hiện tinh thần đoàn kết, sức mạnh tập thể và khát vọng chinh phục biển cả. Lễ hội không chỉ là sân chơi thể thao mà còn mang ý nghĩa cầu mưa thuận gió hòa, mùa màng bội thu.', en: 'A distinctive cultural beauty of coastal people, expressing solidarity, collective strength and the aspiration to conquer the sea. The festival is not just a sports arena but also carries meaning of praying for favorable weather and bountiful harvests.' },
       tags: { vi: ['Văn hóa miền biển', 'Lễ hội dân gian', 'Thể thao truyền thống'], en: ['Coastal culture', 'Folk festival', 'Traditional sports'] },
       href: '/festivals',
-      video: '/video/LeCauNgu.mp4',
+      video: 'https://drive.google.com/file/d/15zNLb34ykxZbOqktx8f1fo5ciI0lv1CG/preview',
     },
   ];
 
@@ -223,7 +223,7 @@ export default function HomePage() {
               <EditableResource
                 id="home.intro.video"
                 type="video"
-                defaultContent="/video/TruongVinhAn_PhuVinh.mp4"
+                defaultContent="https://drive.google.com/file/d/1hG_CZWQTdzvkjSXtVTGWdA0iT0VTnDBg/preview"
                 containerClassName="w-full h-full aspect-video"
                 className="w-full h-full object-cover"
               />
@@ -289,13 +289,21 @@ export default function HomePage() {
                 <div className="grid grid-cols-1 md:grid-cols-2">
                   <div className="aspect-video md:aspect-auto relative">
                     {item.video ? (
-                      <video
-                        src={item.video}
-                        className="w-full h-full object-cover"
-                        controls
-                        preload="metadata"
-                        poster={item.img}
-                      />
+                      item.video.includes('drive.google.com') ? (
+                        <iframe
+                          src={item.video}
+                          allowFullScreen
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <video
+                          src={item.video}
+                          className="w-full h-full object-cover"
+                          controls
+                          preload="metadata"
+                          poster={item.img}
+                        />
+                      )
                     ) : (
                       <img src={item.img} alt={item.title[lang]} className="w-full h-full object-cover" />
                     )}

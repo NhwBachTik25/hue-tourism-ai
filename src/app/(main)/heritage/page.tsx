@@ -51,7 +51,7 @@ In late June 2022, Phu Dien Champa Tower was recognized with two records: The fi
             '/images/heritage/thap-cham-3.jpg',
             '/images/heritage/thap-cham-4.jpg',
         ],
-        video: '/video/2_thapcham_phudien.mp4',
+        video: 'https://drive.google.com/file/d/10ND6A1rlfpaPCORyCr_txFeZcbvpApLa/preview',
         location: { vi: 'Thôn Mỹ Khánh, Xã Phú Vinh', en: 'My Khanh Village, Phu Vinh Commune' },
         coordinates: { lat: 16.4957912, lng: 107.7460799 },
         facts: [
@@ -101,7 +101,7 @@ With its historical values, Ha Thanh Communal House was classified as a provinci
             '/images/heritage/dinh-ha-thanh-4.jpg',
             '/images/heritage/dinh-ha-thanh-5.jpg',
         ],
-        video: '/video/DinhLangHaThanh.mp4',
+        video: 'https://drive.google.com/file/d/1UjqMzbM_g3wGlptzIS_xfyM7XZBMYoCq/preview',
         location: { vi: 'Thôn 3, Xã Phú Vinh', en: 'Hamlet 3, Phu Vinh Commune' },
         coordinates: { lat: 16.4335918, lng: 107.7796597 },
         facts: [
@@ -274,12 +274,20 @@ export default function HeritagePage() {
                     {currentHeritage.video && (
                         <div className="max-w-6xl mx-auto px-4 -mt-24 relative z-20 mb-16">
                             <div className="rounded-2xl overflow-hidden shadow-2xl border border-border/50 bg-black aspect-video relative group">
-                                <video
-                                    src={currentHeritage.video}
-                                    controls
-                                    className="w-full h-full object-cover rounded-2xl"
-                                    poster={currentHeritage.images[0]}
-                                />
+                                {currentHeritage.video.includes('drive.google.com') ? (
+                                    <iframe
+                                        src={currentHeritage.video}
+                                        allowFullScreen
+                                        className="w-full h-full object-cover rounded-2xl"
+                                    />
+                                ) : (
+                                    <video
+                                        src={currentHeritage.video}
+                                        controls
+                                        className="w-full h-full object-cover rounded-2xl"
+                                        poster={currentHeritage.images[0]}
+                                    />
+                                )}
                             </div>
                         </div>
                     )}
