@@ -136,7 +136,7 @@ export async function chat(userMessage: string, options: ChatOptions = {}): Prom
     const { context, pageContext, overridePrompt } = options;
 
     const ai = getGenAI();
-    const model = ai.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = ai.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
     let fullPrompt = '';
     
@@ -165,7 +165,7 @@ export async function chat(userMessage: string, options: ChatOptions = {}): Prom
         return text;
     } catch (error) {
         console.error('Gemini API Error:', error);
-        throw new Error('Không thể kết nối với AI. Vui lòng thử lại sau.');
+        throw new Error('Không thể kết nối với AI');
     }
 }
 
@@ -177,7 +177,7 @@ export async function streamChat(
     const { context, pageContext } = options;
 
     const ai = getGenAI();
-    const model = ai.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = ai.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
     let fullPrompt = SYSTEM_PROMPT + '\n\n';
 
@@ -204,7 +204,7 @@ export async function streamChat(
         return fullResponse;
     } catch (error) {
         console.error('Gemini API Error:', error);
-        throw new Error('Không thể kết nối với AI. Vui lòng thử lại sau.');
+        throw new Error('Không thể kết nối với AI');
     }
 }
 
@@ -214,7 +214,7 @@ export async function generateTripItinerary(
     preferences?: string
 ): Promise<string> {
     const ai = getGenAI();
-    const model = ai.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = ai.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
     const durationMap = {
         'half-day-morning': 'nửa ngày buổi sáng (5h-11h)',

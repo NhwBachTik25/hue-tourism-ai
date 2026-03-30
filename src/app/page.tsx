@@ -290,11 +290,16 @@ export default function HomePage() {
                   <div className="aspect-video md:aspect-auto relative">
                     {item.video ? (
                       item.video.includes('drive.google.com') ? (
-                        <iframe
-                          src={item.video}
-                          allowFullScreen
-                          className="w-full h-full object-cover"
-                        />
+                        <div className="relative w-full h-full overflow-hidden bg-black group-hover:pointer-events-none">
+                          <iframe
+                            src={item.video}
+                            allowFullScreen
+                            className="absolute border-0 w-full"
+                            style={{ height: 'calc(100% + 65px)', top: '-65px' }}
+                          />
+                          {/* Overlay to block the popout icon area */}
+                          <div className="absolute top-0 right-0 w-24 h-16 bg-transparent z-10" />
+                        </div>
                       ) : (
                         <video
                           src={item.video}

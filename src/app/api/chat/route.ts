@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(
             {
                 error: 'Internal server error',
-                response: `Xin lỗi, đã có lỗi xảy ra: ${errorMessage}. Vui lòng thử lại sau.`
+                response: `Lỗi kết nối AI: ${errorMessage}. Vui lòng thử lại sau.`
             },
             { status: 200 }
         );

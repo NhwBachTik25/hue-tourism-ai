@@ -182,11 +182,19 @@ export function EditableMedia({
                 );
             case 'gdrive':
                 return (
-                    <iframe
-                        src={getGoogleDriveEmbed(src)}
-                        className={cn("w-full aspect-video rounded-xl", className)}
-                        allowFullScreen
-                    />
+                    <div className={cn("relative w-full aspect-video rounded-xl overflow-hidden bg-black", className)}>
+                        <iframe
+                            src={getGoogleDriveEmbed(src)}
+                            className="absolute border-0 w-full"
+                            style={{ 
+                                height: 'calc(100% + 65px)', 
+                                top: '-65px' 
+                            }}
+                            allowFullScreen
+                        />
+                        {/* Overlay to block the popout icon area */}
+                        <div className="absolute top-0 right-0 w-24 h-16 bg-transparent z-10" />
+                    </div>
                 );
             case 'video':
                 return (
