@@ -93,6 +93,7 @@ export function EditableMedia({
                 setMediaType(data.type || detectMediaType(data.src));
             } else {
                 setOriginalSrc(defaultSrc);
+                setMediaType(detectMediaType(defaultSrc));
             }
 
             // Load media library

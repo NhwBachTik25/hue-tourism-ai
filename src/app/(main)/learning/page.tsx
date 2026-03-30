@@ -585,13 +585,13 @@ function LearningPageContent() {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                                         <Button onClick={startGame1} className="w-full h-auto flex flex-col items-center justify-center bg-teal-900/40 hover:bg-teal-800/60 border border-teal-700/50 text-teal-50 font-medium py-8 px-4 rounded-2xl transition-all shadow-lg text-center group">
                                             <Star className="mb-3 w-8 h-8 text-teal-400 group-hover:scale-110 transition-transform" />
-                                            <span className="text-lg font-bold block mb-1">{lang === 'vi' ? 'Chế độ Đa Dạng (Hoa)' : 'Mixed Mode (Hoa)'}</span>
+                                            <span className="text-lg font-bold block mb-1">{lang === 'vi' ? 'Chế độ Đa Dạng' : 'Mixed Mode'}</span>
                                             <span className="text-sm text-teal-300/70 font-normal">3 Vòng: Ghép cặp, Đúng/Sai, Trắc Nghiệm</span>
                                         </Button>
 
                                         <Button onClick={startGame2} className="w-full h-auto flex flex-col items-center justify-center bg-amber-900/40 hover:bg-amber-800/60 border border-amber-700/50 text-amber-50 font-medium py-8 px-4 rounded-2xl transition-all shadow-lg text-center group">
                                             <Zap className="mb-3 w-8 h-8 text-amber-400 group-hover:scale-110 transition-transform" />
-                                            <span className="text-lg font-bold block mb-1">{lang === 'vi' ? 'Chế độ Trắc Nghiệm (Ame)' : 'MCQ Mode (Ame)'}</span>
+                                            <span className="text-lg font-bold block mb-1">{lang === 'vi' ? 'Chế độ Trắc Nghiệm' : 'MCQ Mode'}</span>
                                             <span className="text-sm text-amber-300/70 font-normal">Thử thách 24 câu hỏi liên tục theo chủ đề</span>
                                         </Button>
                                     </div>

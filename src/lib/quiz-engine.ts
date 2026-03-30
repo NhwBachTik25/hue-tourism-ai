@@ -49,7 +49,7 @@ function getGenAI(): GoogleGenerativeAI {
 
 export async function generateLearningQuiz(): Promise<string> {
     const ai = getGenAI();
-    const model = ai.getGenerativeModel({ model: 'gemini-2.5-flash' });
+    const model = ai.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
     const prompt = `${QUIZ_SYSTEM_PROMPT}\n\nHãy tạo NGAY một bộ câu hỏi KHÔNG TRÙNG LẶP cho Hành Trình Khám Phá Di Sản Phú Vinh (Đình Hà Thanh, Tháp Chăm Phú Diên, Biển Phú Diên).`;
 
