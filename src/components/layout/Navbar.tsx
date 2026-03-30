@@ -17,8 +17,7 @@ const navItems = [
     { href: '/explore-3d', labelVi: 'Khám phá 3D', labelEn: 'Explore 3D' },
     { href: '/destinations', labelVi: 'Điểm đến', labelEn: 'Destinations' },
     { href: '/learning', labelVi: 'Học tập', labelEn: 'Learning' },
-    { href: '/stories', labelVi: 'Câu chuyện AI', labelEn: 'AI Stories' },
-];
+    { href: '/stories', labelVi: 'AI Lộ trình', labelEn: 'AI Itinerary' },
 
 export function Navbar() {
     const [mounted, setMounted] = useState(false);
