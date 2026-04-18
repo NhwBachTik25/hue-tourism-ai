@@ -59,14 +59,31 @@ function getGenAI(): GoogleGenerativeAI {
     return new GoogleGenerativeAI(apiKey);
 }
 
-export async function generateLearningQuiz(): Promise<string> {
-    const ai = getGenAI();
-    const model = ai.getGenerativeModel({ model: 'gemini-2.5-flash' });
+async function executeWithRetry<T>(operation: () => Promise<T>, maxRetries = 5): Promise<T> {
+    let lastError = new Error('Operation failed');
+    for (let i = 0; i < maxRetries; i++) {
+        try {
+            return await operation();
+        } catch (error) {
+            lastError = error instanceof Error ? error : new Error(String(error));
+            console.warn(`[API Retry] Attempt ${i + 1}/${maxRetries} failed:`, lastError.message);
+            if (i === maxRetries - 1) break;
+            await new Promise(r => setTimeout(r, 500));
+        }
+    }
+    throw lastError;
+}
 
+export async function generateLearningQuiz(): Promise<string> {
     const prompt = `${QUIZ_SYSTEM_PROMPT}\n\nHãy tạo NGAY một bộ câu hỏi KHÔNG TRÙNG LẶP cho Hành Trình Khám Phá Di Sản Phú Vinh (Đình Hà Thanh, Tháp Chăm Phú Diên, Biển Phú Diên).`;
 
     try {
-        const result = await model.generateContent(prompt);
+        const result = await executeWithRetry(() => {
+            const ai = getGenAI();
+            const model = ai.getGenerativeModel({ model: 'gemini-2.5-flash' });
+            return model.generateContent(prompt);
+        });
+        
         let text = result.response.text();
         
         // Clean up markdown markers if the AI still included them

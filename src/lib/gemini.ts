@@ -142,11 +142,25 @@ export interface ChatOptions {
     overridePrompt?: boolean;
 }
 
+// Retries up to 3 times to get a valid API response.
+// Since getGenAI grabs a random key, retry naturally skips exhausted keys.
+async function executeWithRetry<T>(operation: () => Promise<T>, maxRetries = 5): Promise<T> {
+    let lastError = new Error('Operation failed');
+    for (let i = 0; i < maxRetries; i++) {
+        try {
+            return await operation();
+        } catch (error) {
+            lastError = error instanceof Error ? error : new Error(String(error));
+            console.warn(`[API Retry] Attempt ${i + 1}/${maxRetries} failed:`, lastError.message);
+            if (i === maxRetries - 1) break;
+            await new Promise(r => setTimeout(r, 500)); // slight delay
+        }
+    }
+    throw lastError;
+}
+
 export async function chat(userMessage: string, options: ChatOptions = {}): Promise<string> {
     const { context, pageContext, overridePrompt } = options;
-
-    const ai = getGenAI();
-    const model = ai.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
     let fullPrompt = '';
     
@@ -168,7 +182,11 @@ export async function chat(userMessage: string, options: ChatOptions = {}): Prom
     }
 
     try {
-        const result = await model.generateContent(fullPrompt);
+        const result = await executeWithRetry(() => {
+            const ai = getGenAI();
+            const model = ai.getGenerativeModel({ model: 'gemini-2.5-flash' });
+            return model.generateContent(fullPrompt);
+        });
         const response = result.response;
         const text = response.text();
 
@@ -186,9 +204,6 @@ export async function streamChat(
 ): Promise<string> {
     const { context, pageContext } = options;
 
-    const ai = getGenAI();
-    const model = ai.getGenerativeModel({ model: 'gemini-2.5-flash' });
-
     let fullPrompt = SYSTEM_PROMPT + '\n\n';
 
     if (context) {
@@ -202,7 +217,11 @@ export async function streamChat(
     fullPrompt += `Câu hỏi của du khách: ${userMessage}`;
 
     try {
-        const result = await model.generateContentStream(fullPrompt);
+        const result = await executeWithRetry(() => {
+            const ai = getGenAI();
+            const model = ai.getGenerativeModel({ model: 'gemini-2.5-flash' });
+            return model.generateContentStream(fullPrompt);
+        });
         let fullResponse = '';
 
         for await (const chunk of result.stream) {
@@ -223,9 +242,6 @@ export async function generateTripItinerary(
     duration: 'half-day-morning' | 'half-day-afternoon' | 'full-day' | 'family',
     preferences?: string
 ): Promise<string> {
-    const ai = getGenAI();
-    const model = ai.getGenerativeModel({ model: 'gemini-2.5-flash' });
-
     const durationMap = {
         'half-day-morning': 'nửa ngày buổi sáng (5h-11h)',
         'half-day-afternoon': 'nửa ngày buổi chiều (14h-20h)',
@@ -250,7 +266,11 @@ Hãy tạo lộ trình chi tiết bao gồm:
 Format đẹp, dễ đọc, có emoji.`;
 
     try {
-        const result = await model.generateContent(prompt);
+        const result = await executeWithRetry(() => {
+            const ai = getGenAI();
+            const model = ai.getGenerativeModel({ model: 'gemini-2.5-flash' });
+            return model.generateContent(prompt);
+        });
         return result.response.text();
     } catch (error) {
         console.error('Trip generation error:', error);
