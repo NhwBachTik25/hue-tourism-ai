@@ -15,11 +15,11 @@ export async function POST(request: NextRequest) {
         }
 
         // Check if API key is configured
-        if (!process.env.GOOGLE_GEMINI_API_KEY) {
+        if (!process.env.GEMINI_API_KEYS && !process.env.GOOGLE_GEMINI_API_KEY) {
             return NextResponse.json(
                 {
                     error: 'API chưa được cấu hình',
-                    response: 'Xin lỗi, hệ thống AI chưa được cấu hình. Vui lòng thêm GOOGLE_GEMINI_API_KEY vào file .env.local để sử dụng chatbot.'
+                    response: 'Xin lỗi, hệ thống AI chưa được cấu hình. Vui lòng thêm GEMINI_API_KEYS hoặc GOOGLE_GEMINI_API_KEY vào file .env.local để sử dụng chatbot.'
                 },
                 { status: 200 }
             );

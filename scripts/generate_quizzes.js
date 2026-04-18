@@ -2,18 +2,42 @@ const fs = require('fs');
 const https = require('https');
 
 // Get API key
-let apiKey = '';
+let apiKeys = [];
 try {
     const env = fs.readFileSync('.env.local', 'utf-8');
-    const match = env.match(/GOOGLE_GEMINI_API_KEY=(.*?)(?:\n|$)/);
-    if (match) apiKey = match[1].trim();
+    
+    // Check GEMINI_API_KEYS
+    const matchKeys = env.match(/GEMINI_API_KEYS=(.*?)(?:\n|$)/);
+    if (matchKeys && matchKeys[1].trim()) {
+        apiKeys = matchKeys[1].split(',').map(k => k.trim()).filter(k => k.length > 0);
+    } 
+    
+    // Fallback to GOOGLE_GEMINI_API_KEY
+    if (apiKeys.length === 0) {
+        const matchSingle = env.match(/GOOGLE_GEMINI_API_KEY=(.*?)(?:\n|$)/);
+        if (matchSingle && matchSingle[1].trim()) {
+            apiKeys = matchSingle[1].split(',').map(k => k.trim()).filter(k => k.length > 0);
+        }
+    }
 } catch (e) {
     console.error('Could not read .env.local:', e.message);
 }
 
-if (!apiKey) {
+if (apiKeys.length === 0) {
+    if (process.env.GEMINI_API_KEYS) {
+        apiKeys = process.env.GEMINI_API_KEYS.split(',').map(k => k.trim()).filter(k => k.length > 0);
+    } else if (process.env.GOOGLE_GEMINI_API_KEY) {
+        apiKeys = process.env.GOOGLE_GEMINI_API_KEY.split(',').map(k => k.trim()).filter(k => k.length > 0);
+    }
+}
+
+if (apiKeys.length === 0) {
     console.error('NO API KEY');
     process.exit(1);
+}
+
+function getRandomApiKey() {
+    return apiKeys[Math.floor(Math.random() * apiKeys.length)];
 }
 
 const QUIZ_SYSTEM_PROMPT = `Bạn là một CHUYÊN GIA GIÁO DỤC, NHÀ NGHIÊN CỨU VĂN HÓA VÀ LỊCH SỬ tại xã Phú Vinh, Thừa Thiên Huế.
@@ -48,7 +72,7 @@ function callGemini(attempt) {
 
         const req = https.request({
             hostname: 'generativelanguage.googleapis.com',
-            path: '/v1beta/models/gemini-2.5-flash:generateContent?key=' + apiKey,
+            path: '/v1beta/models/gemini-2.5-flash:generateContent?key=' + getRandomApiKey(),
             method: 'POST',
             headers: { 'Content-Type': 'application/json' }
         }, res => {

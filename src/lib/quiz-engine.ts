@@ -40,10 +40,22 @@ Cấu trúc JSON đầu ra:
 `;
 
 function getGenAI(): GoogleGenerativeAI {
-    const apiKey = process.env.GOOGLE_GEMINI_API_KEY;
-    if (!apiKey) {
-        throw new Error('GOOGLE_GEMINI_API_KEY is not set');
+    const keysString = process.env.GEMINI_API_KEYS || process.env.GOOGLE_GEMINI_API_KEY;
+    if (!keysString) {
+        throw new Error('API Keys are not set (GEMINI_API_KEYS or GOOGLE_GEMINI_API_KEY)');
     }
+    
+    // Split by comma and remove empty strings/whitespace
+    const keys = keysString.split(',').map(k => k.trim()).filter(k => k.length > 0);
+    
+    if (keys.length === 0) {
+        throw new Error('No valid API keys found');
+    }
+    
+    // Select a random key to distribute the load
+    const randomIndex = Math.floor(Math.random() * keys.length);
+    const apiKey = keys[randomIndex];
+    
     return new GoogleGenerativeAI(apiKey);
 }
 
