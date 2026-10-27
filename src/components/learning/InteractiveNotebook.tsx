@@ -339,9 +339,8 @@ export default function InteractiveNotebook() {
             "Phú Vinh không chỉ đẹp bởi biển xanh, đầm phá, di tích cổ... mà còn đẹp bởi tình người. Mỗi học sinh hôm nay hãy là một người khám phá, một người kể chuyện và một người cùng chung tay bảo vệ di sản quê hương."
           </p>
           <div className="pt-8 mt-8 border-t border-blue-800/50 text-sm text-blue-300/80">
-            <p className="font-bold">Nhóm tác giả: Trần Lê Tâm Chi lớp 6/3 và Lê Thị Ngọc Tuyết lớp 9/1</p>
-            <p>Trường THCS An Bằng - Vinh An</p>
-            <p className="mt-2">Giáo viên hướng dẫn: Cao Thị Lan, Đỗ Thị Hiền</p>
+            <p className="font-bold">Tác giả: Cao Thị Lan</p>
+            <p>Trường THCS Phú Vinh 1</p>
           </div>
         </div>
       </footer>

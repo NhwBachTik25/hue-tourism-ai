@@ -46,14 +46,9 @@ export function Footer() {
               <h4 className="font-bold mb-4">{lang === 'vi' ? 'Thông tin dự án' : 'Project Information'}</h4>
               <div className="space-y-2 text-white/70 text-sm">
                 <p><strong className="text-white/90">{lang === 'vi' ? 'Cuộc thi:' : 'Contest:'}</strong> {lang === 'vi' ? 'Cuộc thi Sáng tạo Thanh thiếu niên, Nhi đồng thành phố Huế lần thứ 19, năm 2026' : '19th Hue City Youth Innovation Competition, 2026'}</p>
-                <div className="pt-2"><strong className="text-white/90">{lang === 'vi' ? 'Nhóm tác giả:' : 'Authors:'}</strong></div>
-                <ul className="list-disc pl-5 space-y-1">
-                  <li>Trần Lê Tâm Chi - Lớp 6/3</li>
-                  <li>Lê Thị Ngọc Tuyết - Lớp 9/1</li>
-                </ul>
                 <div className="pt-2">
-                  <p><strong className="text-white/90">{lang === 'vi' ? 'Giáo viên hướng dẫn:' : 'Supervisors:'}</strong> Cao Thị Lan và Đỗ Thị Hiền</p>
-                  <p><strong className="text-white/90">{lang === 'vi' ? 'Đơn vị:' : 'School:'}</strong> Trường THCS An Bằng - Vinh An, thành phố Huế</p>
+                  <p><strong className="text-white/90">{lang === 'vi' ? 'Tác giả:' : 'Author:'}</strong> Cao Thị Lan</p>
+                  <p><strong className="text-white/90">{lang === 'vi' ? 'Đơn vị:' : 'School:'}</strong> Trường THCS Phú Vinh 1</p>
                 </div>
               </div>
             </div>
