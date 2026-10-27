@@ -45,7 +45,8 @@ export function Footer() {
             <div>
               <h4 className="font-bold mb-4">{lang === 'vi' ? 'Thông tin dự án' : 'Project Information'}</h4>
               <div className="space-y-2 text-white/70 text-sm">
-                <div>
+                <p><strong className="text-white/90">{lang === 'vi' ? 'Giải thưởng:' : 'Award:'}</strong> {lang === 'vi' ? 'Giải thưởng Tiên phong ứng dụng AI trong giáo dục' : 'AI Pioneer in Education Award'}</p>
+                <div className="pt-2">
                   <p><strong className="text-white/90">{lang === 'vi' ? 'Tác giả:' : 'Author:'}</strong> Cao Thị Lan</p>
                   <p><strong className="text-white/90">{lang === 'vi' ? 'Đơn vị:' : 'School:'}</strong> Trường THCS Phú Vinh 1</p>
                 </div>
